@@ -1,238 +1,155 @@
 ---
-title:  "0399A_yaml_utils.R"
-date:   "`r format(Sys.Date(), '%d_%b_%Y)`" 
-TAGS:  yaml,tags,lapply examples,utils,
+title:  "generate_TAGS"
+date:   "`r format(Sys.Date(), '%d_%b_%Y')`" 
+TAGS:  yaml,tags,lapply examples,utils,data.table
 ---
 
-#  FOR REAL
+
+
+## Definitions 
+  
+  * `files` = char[] of all files to be process for TAGS
+  * `headers` = named list of yaml, one element for each file in files. Content
+    includes all yaml specifications, include  if exits.
+  * `TAGS` = named list, each element has name = its file name; contents are
+    chr[1] of contents of `TAGS:`  ( `tag1,tag2,tag3...` )
+
+
 #  ==========
 #  load_all()
 #   Be sure in vim and R in same wd
 #    USE   ,rd  setwd("~/code/publish_project/rmd/")
 ```{r for_real}
-
 load_all()
 library(data.table)
 library(rmarkdown)
+
+
+# relative to project root, 
+here()
+dir  <- here("rmd")
+dir
+
+
+# testing ##########
+dir = "~/code/try_things_here/rmd"
+# testing ##########
+
+```
+
+```{r begin}
+
 {
 begin  <- Sys.time()
 rmd_pattern  <- '[.][Rr](md|markdown)$'
 md_pattern  <- '[.][Rr]?(md|markdown)$'
 
-files  <- get_RMD_files(path = ".", pattern = rmd_pattern)
-files
+files  <- get_RMD_files(path = dir, pattern = rmd_pattern)
+head(files)
 
 
-rmarkdown::yaml_front_matter("generate_TAGS.Rmd")
-lapply(files, rmarkdown::yaml_front_matter)
-# next:  grab $TAGS, if exists
+# each file, grab yaml header, return list called headers
+# each element of headers (or `header`) is also list
+# each header has element for each line of yaml as char[]
+headers  <- lapply(files, rmarkdown::yaml_front_matter)
+head(headers)
 
-# list:  one element for each file.   Each entry is itself a list: file and
-# character vector for TAGS line 
-headers  <- lapply(files, fetch_yaml_header)
-headers
+# be sure each header knows its file name!
+names(headers)  <- files 
+head(headers)
 
 
+# Given header, return element with name TAGS
+get_TAGS  <- function(h = NULL) h$TAGS
 
-# give names to each list element
-headers  <- setNames(headers, files)
 
-headers
-# 
-# Process each of the headers.
-# list:  lines one entry  for each file.  Each entry is itself a list: file and
-# character(1) with Tags line , or NULL plus the date.
-#
-# lines is :
-# ...named list,  
-# ...name of each element is the filename.
-# ...contents of each element is char[1] of the form "TAGS:    a,b,c"  OR NA.
+# TAGS is a named list, each element has
+# ... name, chr[1], file_name
+# ... value,chr[1], contents of tags "tag1, tag2, ..."
+TAGS  <- lapply(headers, get_TAGS)
 
-lines <- lapply(headers, get_TAGS_line)
-kines
 end  <- Sys.time()
+print(end - begin)
 }
-lines
-end - begin
-
+TAGS
 ```
 
-### Create dt
-```{r make_dt}
+```{r data_table}
 
+dt  <- data.table(files = basename(files),
+                  TAGS = TAGS)
 
-# for now, unlist to force TAGS to chr[1] or NA
-dt  <- data.table(file = names(lines),
-                  TAGS = unlist(lines)
-                  )
-dt
-head(dt)
-
-```
-
-
-### Cleanup dt
-```{r}
-# remove `TAGS:`
-dt[, lapply(TAGS,remove_prefix)]
-
-```
-
-
-```{r}
-```
-
-```{r}
-
-# call normalize
-#
-
-
-
-# tags of form "X: a,b,c"
-s1  <- remove_prefix(tags)
-s1
-
-# X: removed
-tags1  <- sapply(tags, remove_prefix)
-tags1
-
-tags2  <- sapply(tags1, remove_comma)
-tags2
-
-length(tags2)
-
-
-# unnormalized dt
-files
-tags2
-dt2  <- data.table(file = files,
-                  tags = tags2,
-                  date = format(Sys.Date())
-                  )
-dt2
-dt2[c(77, 79,99)]
-str(dt2, max.level=1)
-}
-
-
-
-
-
-# ====================
-#  NORMALIZE   dt2
-# ====================
-#
-pat  <- "^TAGS:\\s*"
-dt[, sub := sub(pattern = pat, replacement = "", tags)]
 dt
 
-{
-test  <- list(file1=c("tag1", "tag2"))
-normalize_dt  <- function(e) {
-  name  <- names(e)
-  tags  <- e
-  cat(paste0(tags, "\n"))
-
-normalize_dt(test)
-} 
-
-{
-#   GIVEN 1 row, build normalied dt, normalize_dt 
-#
-# TWO lists 
-l1  <-  list(name=c("file1"), tags=c("tag1", "tag2"))
-l1
-l2  <- list(name=c("file2"),  tags=c("tag3", "tag4", "tag5"))
-l2
-
-# list( file1=tags, file2=tags   )  where each tags is c("tag1", "tag2", "tag3")
-# returns normalized dt(name, tags)
-normalize_dt  <- function(l = list()) {
-  name  <- l[[1]]
-  tags  <- l[[2]]
-  name = rep(name, length(tags))
-  data.table(name = name, tags=tags)
-}
-normalize_dt(l1)
-normalize_dt(l2)
-#
-}
-
-## BEGIN,  each file item, unpack the chr[] tags, normalize
-dt  <- data.table(file_name = files,
-           date  = format(Sys.Date(), "%d%b%Y"),
-           tags_line = lines)
+head(dt, n=10L)
+# 
+```
 
 
+
+```{r process}
+
+# Step 1, remove NULL
+f  <- function(e) ifelse(is.null(e), return(NA), return(e))
+dt  <- dt[,.(files, TAGS = lapply(TAGS, f)) ]
+dt
+
+# Step 2, NA_character_
+# Step 2  use NA_character_ version of NA
+#base::strsplit() works with NA_character_, but not NA
+f  <- function(e) ifelse(is.character(e),return(e), return(c(NA_character_)))
+dt  <- dt[, .(files, TAGS = lapply(TAGS, f)) ]
+dt
+
+# Step 3, split and normalize
+split_up  <- function(e) base::strsplit(e, split="[,]")
+dt  <- dt[, .(TAGS = unlist(lapply(TAGS, split_up) )) , by=files]
+head(dt, n=100L)
+dt[, .N]
+
+```
+
+
+```{r save_to_file  }
 file_name  <- paste0("TAGS_", format(Sys.Date(), "%d%b%Y"))
 file_name
 
 saveRDS(dt, file_name)
 
+# retrieve
 lines  <- readRDS(file_name)
 lines
 
-
-# =======================================
-#  MISC CODE with vapply, lists, char, NULL, NA
-## TO DO 
-l  <- list(a="jim", b="joe", c="cindi")
-# =======================================
-
-names  <- names(l)
-names
-
-tags  <- vapply(l, `[`, character(1), USE.NAMES=FALSE)
-tags
+```
 
 
-# ===========
-#### HELPER
-# ===========
-
-##   change NULL to NA:
-##   NULL is dropped
-x  <- c(NULL, 3, "a")
-x
-##   but NA is OK
-z   <- c(NA, 3, "a")
-z
+```{r render, eval=F, include=F}
 
 
-y  <- NULL
-is.null(y)
+## GOOD PRACTICE:
+#  Refer to files relative to project root, which should remain as working dir.
+#  So why using `here` ?
 
-if (is.null(y)) y  <- NA
-is.null(y)
+file  <-"generate_TAGS.Rmd"
+file  <- here("rmd", file)
+file
 
-## as.character()  strips names!
-##
-x  <- list(a= "ONE", b="TWO")
-x
-is.character(x)
-
-
-y  <- as.character(x)
-y
-names(y)
-
-
-
-x
-
-y  <- sapply(x, `[` )  # keeps names
-y
-names(y)
-is.character(y)
-length(y)
-y[1]
-
-# =======================================
-# END
-# =======================================
+# debugging
+options(tinytex.verbose = TRUE)
+## Want github to display nicely rendered output?
+##  *  include md_format
+#   *  include output_dir = "out"
+#   *  if .gitignore balks,  then add !out/**   to close .github
+rmarkdown::render(file,
+                  #output_format = "pdf_document",
+                  #output_format = "html_document",
+                  output_format=c("html_document",    # if want both
+                                  "md_document"),
+                  #output_dir = "out",
+                  output_file = "out")
 
 ```
+
 
 
 
