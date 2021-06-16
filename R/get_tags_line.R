@@ -1,6 +1,8 @@
 
 #'  @title get_tags_line
+#'
 #'  @description Given a yaml header (everything between `---` inclusive),
+#'
 #'  return the line begins with `TAGS:`  Return NA if no line contains
   #'  `TAGS:`
 #'  @param yaml char vector with each element one line of yaml header

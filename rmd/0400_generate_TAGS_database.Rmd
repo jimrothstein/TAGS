@@ -23,6 +23,7 @@ TAGS:  yaml,tags,lapply examples,utils,data.table
 load_all()
 library(data.table)
 library(rmarkdown)
+library(TAGS)
 
 
 # relative to project root, 
@@ -44,34 +45,27 @@ begin  <- Sys.time()
 rmd_pattern  <- '[.][Rr](md|markdown)$'
 md_pattern  <- '[.][Rr]?(md|markdown)$'
 
-files  <- get_RMD_files(path = dir, pattern = rmd_pattern)
+files  <- TAGS::get_files(path = dir, pattern = rmd_pattern)
 head(files)
 
 
-# each file, grab yaml header, return list called headers
-# each element of headers (or `header`) is also list
-# each header has element for each line of yaml as char[]
-headers  <- lapply(files, rmarkdown::yaml_front_matter)
-head(headers)
+file_headers  <- TAGS::get_file_headers(files)
+s
 
-# be sure each header knows its file name!
-names(headers)  <- files 
-head(headers)
-
-
-# Given header, return element with name TAGS
-get_TAGS  <- function(h = NULL) h$TAGS
+# given list of files
+#  return a named list, one element for each file.  Each element has chr[1]
+#  contents of TAGS:  
 
 
 # TAGS is a named list, each element has
 # ... name, chr[1], file_name
 # ... value,chr[1], contents of tags "tag1, tag2, ..."
-TAGS  <- lapply(headers, get_TAGS)
+files_TAGS_lineq  <- lapply(headers, get_file_TAGS_line)
 
 end  <- Sys.time()
 print(end - begin)
 }
-TAGS
+TAGS_lines
 ```
 
 ```{r data_table}
@@ -121,6 +115,12 @@ lines  <- readRDS(file_name)
 lines
 
 ```
+```{r order}
+dt[!is.na(TAGS), sort(TAGS)]
+dt[!is.na(TAGS), by=file] 
+```
+
+
 
 
 ```{r render, eval=F, include=F}
