@@ -11,6 +11,6 @@ get_files(path = ".", pattern = NULL, recursive = FALSE)
 Ignores files that begin with '_'
 @param path  Directory to query.
 @param pattern regex pattern to match files
-@return full file name (with directory)
+@return list of full file name (with directory)
 @export
 }

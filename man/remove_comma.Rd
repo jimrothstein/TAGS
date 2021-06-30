@@ -2,13 +2,17 @@
 % Please edit documentation in R/zzz.R
 \name{remove_comma}
 \alias{remove_comma}
-\title{remove_commas
+\title{LEGACY (no longer used)
+@title remove_comma
+remove_commas
 @param s  is single character vector or string char\link{1}, where s is of the
 @return  char vector of form:  c("a", "b", "c", "d"}
 \usage{
 remove_comma(s = character())
 }
 \description{
+LEGACY (no longer used)
+@title remove_comma
 remove_commas
 @param s  is single character vector or string char\link{1}, where s is of the
 @return  char vector of form:  c("a", "b", "c", "d"

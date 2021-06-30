@@ -2,7 +2,9 @@
 % Please edit documentation in R/zzz.R
 \name{remove_prefix}
 \alias{remove_prefix}
-\title{remove_prefix
+\title{LEGACY (no longer used)
+@title remove_prefix
+remove_prefix
 @param s  is single character vector or string char\link{1}, where s is of the
 from "X: a,b,d..."  and X:  (TAGS:) is to be removed.
 @return  char\link{1}  without X:}
@@ -10,6 +12,8 @@ from "X: a,b,d..."  and X:  (TAGS:) is to be removed.
 remove_prefix(s = character())
 }
 \description{
+LEGACY (no longer used)
+@title remove_prefix
 remove_prefix
 @param s  is single character vector or string char\link{1}, where s is of the
 from "X: a,b,d..."  and X:  (TAGS:) is to be removed.

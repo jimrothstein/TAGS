@@ -3,7 +3,8 @@
 \docType{data}
 \name{x}
 \alias{x}
-\title{HELPER functions (non-exported)}
+\title{fetch yaml
+match top and bottom '---'}
 \format{
 An object of class \code{character} of length 5.
 }
@@ -11,7 +12,8 @@ An object of class \code{character} of length 5.
 x
 }
 \description{
-match top and bottom '---'
+HELPER functions (non-exported)
+LEGACY (no longer used)
 }
 \details{
 grep returns int vector indices

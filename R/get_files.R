@@ -1,11 +1,12 @@
-
 #'  @title get_files
 #'
 #'  @description  Given a path and pattern, return char vector of file names.
 #'  Ignores files that begin with '_'
 #'  @param path  Directory to query. 
 #'  @param pattern regex pattern to match files 
-#'  @return full file name (with directory)
+#'  @return list of full file name (with directory)
+#'  @seealso
+#'    *  [get_TAGS] 
 #'  @export
    get_files  <- function (path = ".", pattern = NULL, recursive = FALSE) {
      files  <- list.files(path  =  path, pattern = pattern, recursive = recursive)
@@ -14,29 +15,31 @@
                      !grepl('^_index[.]', basename(files)) ]
      files  <- paste0(path,"/", files)
    }
-
-
-#'  @title get_file_header
-   #'
-#'  @description  wrapper.
-   #'
 #'
-   #'  chr[1].
-   #'  file name
-   #'  Contents of TAGS: line, if not empty
+
+#'  @title get_header
+#'  @description   Wrapper for yaml_front_matter.  Removes "---"; returns list.
+   #'  ie header$TAGS (if exists) and contents are char[1]
    #'
-get_file_headers <- function(files = NULL) {
-
-# each file, grab yaml header, return list called headers
-# each element of headers (or `header`) is also list
-# each header has element for each line of yaml as char[]
-  #
-  lapply(files, rmarkdown::yaml_front_matter)
+#'  @param files. char[] of file names.
+#'  @return char[1] For ONE file, returns yaml header.
+get_header <- function(files = NULL) {
+    rmarkdown::yaml_front_matter(files)
 }
 
+#'  @title get_TAGS 
+#'
+#'  @description Given one yaml header (everything between `---` inclusive), return the line begins with `TAGS:`  Return NA if no line contains `TAGS:`.
 
-# be sure each header knows its file name!
-names(headers)  <- files 
-}
+#' @param   header For one file, header is named list. Each name entry represents
+#' a single yaml line and its contents.  
+#'
+#' @return char[1] that is content of TAGS:
+  get_TAGS   <- function(header) {
+    
+    header["TAGS"]
 
-get_TAGS  <- function(headers = NULL) headers$TAGS
+           }
+
+
+

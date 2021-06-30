@@ -1,5 +1,5 @@
 ---
-title:  "generate_TAGS"
+title: "`r knitr::current_input()`"
 date:   "`r format(Sys.Date(), '%d_%b_%Y')`" 
 TAGS:  yaml,tags,lapply examples,utils,data.table
 ---
@@ -24,23 +24,18 @@ load_all()
 library(data.table)
 library(rmarkdown)
 library(TAGS)
+library(purrr)
 
 
-# relative to project root, 
-here()
-dir  <- here("rmd")
-dir
-
-
-# testing ##########
+# FOR testing ##########
 dir = "~/code/try_things_here/rmd"
-# testing ##########
 
 ```
 
 ```{r begin}
 
 {
+x  <- 3
 begin  <- Sys.time()
 rmd_pattern  <- '[.][Rr](md|markdown)$'
 md_pattern  <- '[.][Rr]?(md|markdown)$'
@@ -49,24 +44,50 @@ files  <- TAGS::get_files(path = dir, pattern = rmd_pattern)
 head(files)
 
 
-file_headers  <- TAGS::get_file_headers(files)
-s
-
-# given list of files
-#  return a named list, one element for each file.  Each element has chr[1]
-#  contents of TAGS:  
+# For each file, extract yaml header into unnamed list:
+# each element of headers holds a char[], yaml lines of each file.
+headers  <- lapply(files, TAGS::get_header)
+headers[1]
 
 
-# TAGS is a named list, each element has
-# ... name, chr[1], file_name
-# ... value,chr[1], contents of tags "tag1, tag2, ..."
-files_TAGS_lineq  <- lapply(headers, get_file_TAGS_line)
+# be sure each elment knows its file name
+names(headers)  <- files 
+headers
+
+get_t  <- function(e) {
+  if (!is.null(e$TAGS)) { return(e$TAGS)
+  } else {
+    return(NA)
+  }
+}
+
+
+{  #PURRR
+# in purrr then DONE!
+if (F) {
+TAGS  <- purrr::map_chr(headers, get_t)
+TAGS
+
+#  OR
+if (F) purrr::map_chr(headers[1:3], "TAGS")
+}
+
+{ IN BASE:
+# in base:   return named char[], with NA if file has no TAGS line
+# default: unlist removes names 
+TAGS <- unlist(lapply(headers, get_t), use.names =T)
+TAGS
+# TAGS  <- lapply(headers, get_TAGS)
+}
 
 end  <- Sys.time()
 print(end - begin)
 }
-TAGS_lines
+TAGS
+head(TAGS)
 ```
+
+
 
 ```{r data_table}
 
@@ -77,6 +98,13 @@ dt
 
 head(dt, n=10L)
 # 
+```
+```{r}
+x  <- c(a = "1", b="2")
+x
+dt  <- data.table(name = names(x), x)
+dt
+
 ```
 
 
@@ -108,6 +136,11 @@ dt[, .N]
 file_name  <- paste0("TAGS_", format(Sys.Date(), "%d%b%Y"))
 file_name
 
+# For coding, R internals:
+# save/load save one or more objects into environment
+
+# For users:
+# saveRDS/readRDS save ONE object, possible retrieve in different name
 saveRDS(dt, file_name)
 
 # retrieve

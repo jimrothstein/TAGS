@@ -1,4 +1,6 @@
 
+#'  LEGACY (no longer used)
+#'  @title remove_comma
 #'  remove_commas
 #'  @param s  is single character vector or string char[1], where s is of the
 #   from "a,b,d..."  and commas are to be removed.
@@ -8,6 +10,9 @@ remove_comma  <- function(s = character()){
   strsplit(s, ',')[[1]]
 }
 
+#'    
+#'  LEGACY (no longer used)
+#'  @title remove_prefix
 #'  remove_prefix
 #'  @param s  is single character vector or string char[1], where s is of the
 #'   from "X: a,b,d..."  and X:  (TAGS:) is to be removed.
@@ -26,7 +31,8 @@ remove_prefix  <- function(s = character()){
 
 
 #'  HELPER functions (non-exported)
-#'
+#'  LEGACY (no longer used)
+#' @title fetch yaml
 #'  match top and bottom '---'
 #' @details  grep returns int vector indices
 #'  USAGE:   x  <-  c('---', 'a;lkdjf;asl ' , '999', 'af---', '---')
