@@ -1,45 +1,57 @@
-#'  @title get_files
-#'
-#'  @description  Given a path and pattern, return char vector of file names.
-#'  Ignores files that begin with '_'
-#'  @param path  Directory to query. 
-#'  @param pattern regex pattern to match files 
-#'  @return list of full file name (with directory)
-#'  @seealso
+#' @title get_files
+#' @description  Given a path and pattern, return named char[] vector of file names.  Ignores files that begin with '_'
+#' @param path  char[1] Directory to query. 
+#' @param pattern char[1] Regex pattern to match files 
+#' @param recursive Logical Default is F.
+#' @return named char[] of file names. 
+#' @seealso
 #'    *  [get_TAGS] 
-#'  @export
+#' @export  
+#'
    get_files  <- function (path = ".", pattern = NULL, recursive = FALSE) {
+     # returns base names
      files  <- list.files(path  =  path, pattern = pattern, recursive = recursive)
      # exclude files begin with _
      files  <- files[!grepl('^_', basename(files)) | 
                      !grepl('^_index[.]', basename(files)) ]
-     files  <- paste0(path,"/", files)
+     names(files)  <- files
+     return(files)
    }
-#'
 
-#'  @title get_header
-#'  @description   Wrapper for yaml_front_matter.  Removes "---"; returns list.
-   #'  ie header$TAGS (if exists) and contents are char[1]
+#' @title get_yaml
+#' @description   Wrapper for yaml_front_matter.  Given a file containing yaml,
+   #' removes "---"; returns named list with one element.  The list contains
+   #' character[] corresponding to ONE line yaml.  If file contains no yaml, it
+   #' is skipped.
    #'
-#'  @param files. char[] of file names.
-#'  @return char[1] For ONE file, returns yaml header.
-get_header <- function(files = NULL) {
-    rmarkdown::yaml_front_matter(files)
+#' @param file  char[1] of file name.
+#' @param dir character[1] full path (without filename)
+#' @return unnamed list.  List contents char[] of length equal to lines of
+   #' YAML.
+#' @export
+get_yaml <- function(file = NULL, dir = NULL) {
+    ## TODO error checks
+    file  <- paste0(dir, "/", file)  
+    rmarkdown::yaml_front_matter(file) 
 }
 
-#'  @title get_TAGS 
-#'
-#'  @description Given one yaml header (everything between `---` inclusive), return the line begins with `TAGS:`  Return NA if no line contains `TAGS:`.
 
-#' @param   header For one file, header is named list. Each name entry represents
-#' a single yaml line and its contents.  
-#'
-#' @return char[1] that is content of TAGS:
-  get_TAGS   <- function(header) {
-    
-    header["TAGS"]
+#' @title get_t
+#' @description returns TAGS
+#' ## the_yaml is named list.  Contents of each element is list of length n,
+#'   ## correspondng to number of lines of YAML. Content of this element is chr()
+#'   ## YAML.  If a file had no YAML, then it is not here.
+#'   ## In this function, return the TAGS or NA. 
+#'   ##
+#' @export 
+get_t  <- function(e) {
+  if (!is.null(e$TAGS)) { return(e$TAGS)
+  } else {
+    return(NA)
+  }}
 
-           }
+  
 
+  
 
 

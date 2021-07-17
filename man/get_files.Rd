@@ -2,15 +2,25 @@
 % Please edit documentation in R/get_files.R
 \name{get_files}
 \alias{get_files}
-\title{@title get_files}
+\title{get_files}
 \usage{
 get_files(path = ".", pattern = NULL, recursive = FALSE)
 }
+\arguments{
+\item{path}{char\link{1} Directory to query.}
+
+\item{pattern}{char\link{1} Regex pattern to match files}
+
+\item{recursive}{Logical Default is F.}
+}
+\value{
+named char[] of file names.
+}
 \description{
-@description  Given a path and pattern, return char vector of file names.
-Ignores files that begin with '_'
-@param path  Directory to query.
-@param pattern regex pattern to match files
-@return list of full file name (with directory)
-@export
+Given a path and pattern, return named char[] vector of file names.  Ignores files that begin with '_'
+}
+\seealso{
+\itemize{
+\item \link{get_TAGS}
+}
 }
