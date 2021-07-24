@@ -17,6 +17,8 @@ remove_fake_rmd  <- function(fake_file =
     if (file.exits(fake_file)) file.remove( fake_file)
 }
 
+## redo with tinytest::
+if (F) { 
 
 testthat::test_that("process fake yaml", {
   create_fake_rmd()
@@ -52,7 +54,7 @@ testthat::test_that("process fake yaml", {
 )
 
 
-
+}
 
 
 

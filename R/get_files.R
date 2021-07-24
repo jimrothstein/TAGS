@@ -1,7 +1,7 @@
 #' @title get_files
 #' @description  Given a path and pattern, return named char[] vector of file names.  Ignores files that begin with '_'
 #' @param path  char[1] Directory to query. 
-#' @param pattern char[1] Regex pattern to match files 
+#' @param \code{pattern} char[1] Regex pattern to match files 
 #' @param recursive Logical Default is F.
 #' @return named char[] of file names. 
 #' @seealso
@@ -43,6 +43,7 @@ get_yaml <- function(file = NULL, dir = NULL) {
 #'   ## YAML.  If a file had no YAML, then it is not here.
 #'   ## In this function, return the TAGS or NA. 
 #'   ##
+#' @param e named list.  e represents single file and is ONE element of named list the_yaml 
 #' @export 
 get_t  <- function(e) {
   if (!is.null(e$TAGS)) { return(e$TAGS)

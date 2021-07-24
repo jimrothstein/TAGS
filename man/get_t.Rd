@@ -6,6 +6,9 @@
 \usage{
 get_t(e)
 }
+\arguments{
+\item{e}{named list.  e represents single file and is ONE element of named list the_yaml}
+}
 \description{
 returns TAGS
 \subsection{the_yaml is named list.  Contents of each element is list of length n,}{

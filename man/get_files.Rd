@@ -9,9 +9,9 @@ get_files(path = ".", pattern = NULL, recursive = FALSE)
 \arguments{
 \item{path}{char\link{1} Directory to query.}
 
-\item{pattern}{char\link{1} Regex pattern to match files}
-
 \item{recursive}{Logical Default is F.}
+
+\item{\code{pattern}}{char\link{1} Regex pattern to match files}
 }
 \value{
 named char[] of file names.

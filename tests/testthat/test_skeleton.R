@@ -1,5 +1,9 @@
 library(testthat)
 
+
+## SKELTON for testing.
+##
+##
 # =======================
 if (F) {
 testthat::test_path(here("tests","testthat", "test_test01.R"))
