@@ -100,14 +100,15 @@ dt
   kable(dt)
   kable(dt,format="pipe", align = "l", caption = "TAGs and files")  %>% head(n=100L)
 
+  ## best
+  View(dt)
 
-
+# remove
 if (F) {
 # Step 1, remove NULL
 f  <- function(e) ifelse(is.null(e), return(NA), return(e))
 dt  <- dt[,.(files, TAGS = lapply(TAGS, f)) ]
 dt
-View(dt)
 }
 
 ## resume
@@ -124,9 +125,10 @@ split_up  <- function(e) base::strsplit(e, split="[,]")
 dt  <- dt[, .(TAGS = unlist(lapply(TAGS, split_up) )) , by=names]
 head(dt, n=100L)
 dt[, .N]
+dt[, .N, by = TAGS]
 
-
-
+## SAVE and RETRIEVE
+{
 file_name  <- paste0("TAGS_", format(Sys.Date(), "%d%b%Y"))
 file_name
 
@@ -140,10 +142,13 @@ saveRDS(dt, file_name)
 # retrieve
 lines  <- readRDS(file_name)
 lines
+}
 
 ## for each TAG, list the files
   ## list by TAGS - something wRONG - 
   dt[!is.na(TAGS), ][order(TAGS),.(TAGS, names) ]
+
+dt[, print(.SD), by=.(TAGS)]
 
 ## list by file names
   dt[!is.na(TAGS), sort(names)]
