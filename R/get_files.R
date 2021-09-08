@@ -20,9 +20,10 @@
 
 #' @title get_yaml
 #' @description   Wrapper for yaml_front_matter.  Given a file containing yaml,
-   #' removes "---"; returns named list with one element.  The list contains
-   #' character[] corresponding to ONE line yaml.  If file contains no yaml, it
-   #' is skipped.
+   #' If file contains no yaml, it is skipped.
+   #' removes "---"; 
+   #' returns named list with one element.  
+   #' This list contains character[] corresponding to ONE line yaml.  
    #'
 #' @param file  char[1] of file name.
 #' @param dir character[1] full path (without filename)
@@ -35,6 +36,9 @@ get_yaml <- function(file = NULL, dir = NULL) {
     rmarkdown::yaml_front_matter(file) 
 }
 
+
+#' get_yaml_1
+   get_yaml_1  <- function() { }
 
 #' @title get_t
 #' @description returns TAGS

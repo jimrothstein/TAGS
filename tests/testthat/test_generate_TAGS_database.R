@@ -53,17 +53,29 @@ begin  <- Sys.time()
   #
   # each element of \code{}the_yaml} holds a char[], yaml lines of each file.
   # # the_files is named char[]
-    the_yaml  <- lapply(the_files, get_yaml, dir=the_dir )
+    ## ERROR !   if file has TAGS:  but no content, empty.
+    ## ie TAGS:
+    ##
+    ## Yihui
+    #the_yaml  <- lapply(the_files, get_yaml, dir=the_dir )
+    #
+    ## ymlthis:::
+    the_function  <- function(x) {
+        ymlthis:::read_rmd(paste0(the_dir,"/",x), output=c("frontmatter"))
+    }
+    the_yaml   <- lapply(the_files, the_function)
+    the_yaml
 
-    # check
-    names(the_yaml)
-    length(the_yaml)
-    # Example
-    the_yaml[[2]]  # contents
-    names(the_yaml[2]) # name of elment 2
+####    experiments
+{
+
+    content  <- unlist(the_yaml)
+    head(content)  # named atomic character vector!
+    dt  <- data.table(names(content), unname(content))
+    dt
+
 }
-
-
+}
 
 
 { ## extract TAGS content
