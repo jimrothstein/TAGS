@@ -70,6 +70,7 @@ begin  <- Sys.time()
 {
 
     content  <- unlist(the_yaml)
+    ##  the_yaml[[1]]  only returns first element
     head(content)  # named atomic character vector!
     dt  <- data.table(names(content), unname(content))
     dt
