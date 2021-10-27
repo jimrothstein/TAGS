@@ -43,27 +43,28 @@ TAGS:
 
 #  load_all()
 {
-  load_all()
-  library(data.table)
+    load_all()
+    library(data.table)
+
+##  source directory
+    the_dir = "~/code/try_things_here/rmd"
 }
-
-# source directory
-the_dir = "~/code/try_things_here/rmd"
-
-## begin
-
 begin  <- Sys.time()
 
-  { ## RETURN `the_files` 
-      ## ENDS in either md, R, Rmd  (R or r) 
-      ## Omit ^_ files
+  { ## RETURN named character vector, `the_files` | ENDS in either md, R, Rmd  (R or r) | Omit ^_ files
       the_pattern  <- '[.]([Rr]|md|[Rr]md)$'   # no spaces
       the_files  <- get_files(path = the_dir, pattern = the_pattern)
-      the_files
   }
 
   
-    ## RETURN `the_yaml` named list; each element represents one file.  If that
+    ## RETURN `the_yaml` named list; each element represents one file.  
+## 4 cases:
+## -    file has no yaml.
+## -    file has `---`  but is empty, no yaml content.
+## -    file has proper yaml content, but no line for TAGS:
+## -    file has proper yaml content, INCLUDING TAGS.
+##
+## If that
 ##    file has proper yaml and at least one line (TAGS:) there will be non-empty value in character vector.
 
     ## ymlthis:::
@@ -72,8 +73,19 @@ begin  <- Sys.time()
     }
     
     
+# unevaluated expansion
+     #quote(mtcars |> subset(cyl == 4) |> nrow())
+#
+    # named list, 1 element per file:  content either
+# 1.  character vector of yaml
+# 2.  if no yaml, get object 'yml_blank'
+#
     x.1   <- lapply(the_files, the_function)
-    x.1
+
+    # SAME as x.1
+    z  <- sapply(the_files, the_function)
+    z   
+
     x.2  <- lapply(x.1, function(e) {
                if(class(e) == "yml_blank")
                    e[[1]] = c("yml_blank")

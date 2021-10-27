@@ -1,0 +1,13 @@
+---
+author: jimrothstein
+date: '`r format(Sys.Date())`'
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 4.0
+fontfamily: Fira Sans Thin
+fontsize: 11pt
+links-as-notes: true
+TAGS: ' '
+---
+Main body of file.
