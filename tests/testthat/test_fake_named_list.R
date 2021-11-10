@@ -3,7 +3,6 @@ library(testthat)
 
 ## Named list; ie header after converted to named list
 ## minus the "---" at top/botom and minus TAGS: or line:
-##
 create_fake_named_list  <- function() {
   # header should be of form:
   # f1 .... char[1], name of file, this is one and one element

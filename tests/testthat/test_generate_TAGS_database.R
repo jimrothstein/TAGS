@@ -30,15 +30,18 @@ TAGS:
 
 ## Definitions 
 #  
-# * `the_files` = named character vector of  files which match the_pattern.  
-# * `the_dir` = string; source directory for files.
+# * `the_files`: 
+#    named character vector of  files which match the_pattern.  
+#
+# * `the_dir`: 
+#    string; source directory for files.
+#
 # *  the_pattern string; regex (PERL) pattern.
 # * `the_yaml` = named list, one element for each file.  Content is character
 # vector; one line for each line of yaml in the file.  If file has no yaml,
 # character vector is TODO.
 # * `TAGS` = named chr[],  each element has name = its file name; contents are NA if file has no yaml or 
-#   chr[1] of contents of `TAGS:` line ( `tag1,tag2,tag3...` )
-#
+#   chr[1] of contents of `TAGS:` line ( `tag1,tag2,tag3...` ) #
 
 
 #  load_all()
@@ -81,10 +84,8 @@ begin  <- Sys.time()
 # 2.  if no yaml, get object 'yml_blank'
 #
     x.1   <- lapply(the_files, the_function)
+    summary(x.1)
 
-    # SAME as x.1
-    z  <- sapply(the_files, the_function)
-    z   
 
     x.2  <- lapply(x.1, function(e) {
                if(class(e) == "yml_blank")
@@ -93,40 +94,82 @@ begin  <- Sys.time()
                    e = e})
 
     
+
     # why need?
     x.3  <- unlist(x.2)
     str(x.3)
+    x.3
     
-
-
-    ## strip off numbers of end of file names
-    x.4  <- x.3
-    x.4
-    names(x.4)  <- sub("[0-9]+$", "", names(x.3))
-    x.4
-
-
-    dt.1  <- data.table(file = names(x.4), tags = x.4)
-    dt.1 %>% head(n=30L)
-    View(dt.1)
-
-## KEEP rows with TAGS or yml_blank 
+    ## replace class "yml_blank" with string
     {
-    dt.1$tags
-    dt.2  <- dt.1[grep(tags, pattern="^TAGS:|^yml_blank"),]
-    dt.2 %>% head(n=20L)
-    str(dt.2)
-
-    dt.4  <- dt.2
+    files  <- 
+    lapply(the_files, the_function) |>
+    lapply(function(e) {
+               if(class(e) == "yml_blank")
+                   e[[1]] = c("yml_blank")
+               else
+                   e = e}) |>
+    unlist() 
 }
 
-## remove leading ^TAGS: (Explain need for `unlist`)
-## dt.5 should be clean, but not normalized
-{
-    dt.5  <- dt.4[, .(file, tags = 
-                      unlist(lapply(tags, function(e) sub(pattern="^TAGS:", replacement="", x=e))))]
-    dt.5
-    str(dt.5)
+
+{ ## create dt
+
+    ## files is named character vector
+    ##
+
+    ## create data.table
+    dt.1  <- as.data.table(files, keep.rownames="file")
+
+
+    ## rename columns: `files` to tags and then drop it, in-place
+
+    setnames(dt.1, old="files", new="tags")
+
+    dt.1 %>% knitr::kable() %>% head(n=10L)
+}
+
+{ ## clean up,  remove numbers at end of file names
+
+    ## in-place, change values of c("file") to be without numbers
+    ##
+
+    dt.2   <- copy(dt.1)
+    dt.2[, c("file") := sub("[0-9]+$", "", file)]
+    head(dt.2)
+
+    View(dt.2)
+}
+
+## KEEP rows with `^TAGS:` or sQuote(yml_blank)
+    {
+    dt.1  <- copy(dt.2)
+    dt.1$tags
+    
+    ## drop rows
+    dt.1[grep(tags, pattern="^TAGS:|^yml_blank"),]
+    dt.1
+
+    #dt.2  <- dt.1[grep(tags, pattern="^TAGS:|^yml_blank"),]
+    #     dt.2 %>% head(n=20L)
+    #     str(dt.2)
+    #     str(dt.1)
+    # 
+
+
+
+
+## remove leading ^TAGS: 
+    ## TODO:  if sQuote(TAGS:) is otherwise empty, ie no actual tags, then this
+    ## step will leave a blank line:  s/d say "missing TAGS?" or "no tags found
+    ## in TAGS: line"
+
+    dt.4  <- copy(dt.1)
+    dt.4[, c("tags") := sub("^TAGS:", "", tags)]
+    head(dt.4)
+
+
+    dt.5  <- copy(dt.4)
 
 }
         end  <- Sys.time()
@@ -140,6 +183,7 @@ begin  <- Sys.time()
 {  ## view dt <C-Q> to close
   View(dt.5)
 }
+
 
 
 ## NORMALIZE:  RETURN DT
@@ -161,19 +205,19 @@ begin  <- Sys.time()
 
 ### FINALLY, return DT for `tags`, a lookup table  
 {
-        dt.8  <- dt.7[,.SD , .SDcols=c("tags")]
-        setkey(dt.8, tags)
-        key(dt.8)
-        ## also check with tables()
-        dt.8 %>% head(n=30L) 
+    dt.8  <- dt.7[,.SD , .SDcols=c("tags")]
+    setkey(dt.8, tags)
+    key(dt.8)
+    ## also check with tables()
+    dt.8 %>% head(n=30L) 
 
-        ##  apparently setkey does not remove NA
-        tags  <- dt.8
-        tags
-        #### Capitals before small letters!
-        #  tags[order(tags)]
-        tags[, tags]  # as character vector
-        tags %>% head(n=10L)
+    ##  apparently setkey does not remove NA
+    tags  <- dt.8
+    tags
+    #### Capitals before small letters!
+    #  tags[order(tags)]
+    tags[, tags]  # as character vector
+    tags %>% head(n=10L)
 }
 
 
@@ -217,5 +261,6 @@ begin  <- Sys.time()
         names(dt)
 }
 
-```
 
+
+f  <- function(x) {  x + 1}
