@@ -13,7 +13,7 @@ output:
     latex_engine: xelatex  
     toc: true
     toc_depth:  4   
-fontsize: 10pt   
+fontsize: 10pt 
 geometry: margin=0.4in,top=0.25in   
 TAGS:  
 ---
@@ -21,6 +21,7 @@ TAGS:
 \small
 
 ```
+
 - Use ticks:
 - keep YAML, but remove title, date
 
@@ -48,7 +49,7 @@ TAGS:
 {
     load_all()
     library(data.table)
-
+  
 ##  source directory
     the_dir = "~/code/try_things_here/rmd"
 }
@@ -67,12 +68,12 @@ begin  <- Sys.time()
 ## -    file has proper yaml content, but no line for TAGS:
 ## -    file has proper yaml content, INCLUDING TAGS.
 ##
-## If that
-##    file has proper yaml and at least one line (TAGS:) there will be non-empty value in character vector.
+##  TODO:  1st case is problem, fixed with one little changes:  now returns character(1)
 
-    ## ymlthis:::
     the_function  <- function(x) {
-        ymlthis:::read_rmd(paste0(the_dir,"/",x), output=c("frontmatter"))
+        y = ymlthis:::read_rmd(paste0(the_dir,"/",x), output=c("frontmatter"))
+        if (!is.character(y)) y = "yml_blank" 
+        return(y)
     }
     
     
@@ -84,49 +85,40 @@ begin  <- Sys.time()
 # 2.  if no yaml, get object 'yml_blank'
 #
     x.1   <- lapply(the_files, the_function)
+    x.1 |> head(5)
     summary(x.1)
 
 
-    x.2  <- lapply(x.1, function(e) {
-               if(class(e) == "yml_blank")
-                   e[[1]] = c("yml_blank")
-               else
-                   e = e})
+##     x.2  <- lapply(x.1, function(e) {
+##                if(class(e) == "yml_blank")
+##                    e[[1]] = c("yml_blank")
+##                else
+##                    e = e})
 
-    
+##     
 
-    # why need?
+    x.2 = x.1
     x.3  <- unlist(x.2)
-    str(x.3)
-    x.3
+    dt = data.table(name = names(x.3), yaml = x.3)
+    dt
     
-    ## replace class "yml_blank" with string
-    {
-    files  <- 
-    lapply(the_files, the_function) |>
-    lapply(function(e) {
-               if(class(e) == "yml_blank")
-                   e[[1]] = c("yml_blank")
-               else
-                   e = e}) |>
-    unlist() 
+    
+    # ## replace class "yml_blank" with string
+    # {
+    # files  <- 
+    # lapply(the_files, the_function) |>
+    # lapply(function(e) {
+    #            if(class(e) == "yml_blank")
+    #                e[[1]] = c("yml_blank")
+    #            else
+    #                e = e}) |>
+    # unlist()
 }
 
 
-{ ## create dt
-
-    ## files is named character vector
-    ##
-
-    ## create data.table
-    dt.1  <- as.data.table(files, keep.rownames="file")
-
-
-    ## rename columns: `files` to tags and then drop it, in-place
-
-    setnames(dt.1, old="files", new="tags")
-
-    dt.1 %>% knitr::kable() %>% head(n=10L)
+{ 
+  
+    dt %>% knitr::kable() %>% head(n=100L)
 }
 
 { ## clean up,  remove numbers at end of file names
