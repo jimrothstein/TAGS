@@ -20,8 +20,7 @@ TAGS:
 
 \small
 
-```
-
+<!--
 - Use ticks:
 - keep YAML, but remove title, date
 
@@ -43,7 +42,9 @@ TAGS:
 # character vector is TODO.
 # * `TAGS` = named chr[],  each element has name = its file name; contents are NA if file has no yaml or 
 #   chr[1] of contents of `TAGS:` line ( `tag1,tag2,tag3...` ) #
+```
 
+-->
 
 #  load_all()
 {
@@ -61,7 +62,6 @@ begin  <- Sys.time()
   }
 
   
-    ## RETURN `the_yaml` named list; each element represents one file.  
 ## 4 cases:
 ## -    file has no yaml.
 ## -    file has `---`  but is empty, no yaml content.
@@ -69,16 +69,23 @@ begin  <- Sys.time()
 ## -    file has proper yaml content, INCLUDING TAGS.
 ##
 ##  TODO:  1st case is problem, fixed with one little changes:  now returns character(1)
-
+#'  @title the_function
+#'  @description 
+#'      Using ymlthis::, read a file and return the yaml header, everything
+#'      between `---`  If the file contains no yaml header, object "yml_blank"
+#'      is returned.
+#'  @param x string.  file name.
+#'  @return named list. If the file contains no yaml, "yml_blank" is returned.  If the file contains at least `---`, then list is returned.  Each element is charact
+#'    ## RETURN `the_yaml` named list; each element represents one file.  
+#'  @export 
+#'  
     the_function  <- function(x) {
         y = ymlthis:::read_rmd(paste0(the_dir,"/",x), output=c("frontmatter"))
         if (!is.character(y)) y = "yml_blank" 
         return(y)
     }
     
-    
-# unevaluated expansion
-     #quote(mtcars |> subset(cyl == 4) |> nrow())
+#   the_function("~/code/TAGS/R/inst/tinytest/test_generate_TAGS_database.R") 
 #
     # named list, 1 element per file:  content either
 # 1.  character vector of yaml
