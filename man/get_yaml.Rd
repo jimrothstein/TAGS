@@ -17,7 +17,8 @@ YAML.
 }
 \description{
 Wrapper for yaml_front_matter.  Given a file containing yaml,
-removes "---"; returns named list with one element.  The list contains
-character[] corresponding to ONE line yaml.  If file contains no yaml, it
-is skipped.
+If file contains no yaml, it is skipped.
+removes "---";
+returns named list with one element.
+This list contains character[] corresponding to ONE line yaml.
 }
