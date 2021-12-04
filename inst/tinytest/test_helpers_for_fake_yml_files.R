@@ -1,12 +1,12 @@
 ---
-TAGS:  create_fake, yaml,test
+TAGS:  create_fake, yaml,tinytest, helper
 ---
 
 # -----------------------------------------------------------
-# file <- "inst/tinytest/test_FUNCTIONS_fake_yaml_files.R "
-# PURPOSE:   create assorted FAKE files for testing.
+# file <- "inst/tinytest/test_FUNCTIONS_fake_yml_files.R "
 #
-    #
+# PURPOSE:   create assorted FAKE files for testthat: testing.
+#
 # -----------------------------------------------------------
 #
 {
@@ -15,35 +15,87 @@ library(ymlthis)
 library(magrittr)
 load_all()
 }
-}{
+
 ## name and create temp dir
-    the_dir  <- tempdir()
-    the_dir
+{
+    ## the_dir  <- tempdir()
+    ##  but prefer more control:
+    the_dir  <- "./test_dir"
+
+## default remove OLD
+    if (dir.exists(the_dir)) unlink(the_dir, recursive=T) 
+    dir.exists(the_dir)
+
+    dir.create(the_dir)
+
     stopifnot(dir.exists(the_dir))
     list.files(the_dir)
 }
 
 
-
-#--------------
-#  BEGIN HERE 
-#--------------
-#
-####  yml_object:   Create & Study
-###
+##  tinytest:   create_fake_yml_object()
 {
-##  full yml
-##
-    h  <- create_fake_yaml_object(the_tags_line = "tag1,tag2, tag3")
-    class(h)
-    str(h)
-    ls.str(h)
 
-tinytest::expect_true(is_yml(create_fake_yaml_object("Tag1")))
-tinytest::expect_true(is_yml(h))
+## full yml header
+tinytest::expect_true(is_yml(create_fake_yml_object("Tag1")))
 
-## full yml MINUS any TAGS: line
-    create_fake_yaml_object()
+## 
+## full yml header, but tagsline:   TAGS: null 
+
+## default, basic yml, but no TAGS: line
+{
+x  <- ymlthis::yml()
+
+tinytest::expect_true(is_yml(x))
+}
+
+## works
+create_fake_yml_object(the_tags_line = "tag1,tag2, tag3")
+
+{  ## all create `null`
+create_fake_yml_object(the_tags_line = "")
+create_fake_yml_object(the_tags_line = " ")
+create_fake_yml_object(the_tags_line = NULL)
+create_fake_yml_object()
+}
+## create fake files
+##  yml:  dot lines only
+{
+
+the_file  <- "dotted_lines_only.Rmd"
+the_path  <- paste0(the_dir, "/", the_file) 
+writeLines("---
+
+           ---
+
+           Only dotted lines here",
+       con=the_path)
+       
+the_text  <- "---\n\n---\n\n only dotted lines here"
+the_text  <- "---
+
+---
+
+Only dotted lines here.
+"
+the_text
+print(the_text)
+
+create_fake_file_custom(text=the_text, the_dir = the_dir, the_file= the_file)
+readLines(paste0(the_dir, "/", the_file))
+
+}
+{ ## no yml, no yml header at all
+the_file  <- "testing.md"
+the_path  <- paste0(the_dir, "/", the_file) 
+
+create_fake_file_custom(text="fake_file", the_dir = the_dir, the_file= the_file)
+
+list.files(the_dir)
+
+readLines(paste0(the_dir, "/", the_file))
+}
+
 
 
 

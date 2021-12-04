@@ -1,19 +1,21 @@
-
-#-----------
-# FUNCTIONS
-#-----------
+##  tinytest::  helper functions for fake yml files
     
-#### 1 create_fake_yaml_object
-{
-#  GOAL:   create 4 use cases to test TAGS: ....
-#  (1) all correct
-#  (2) no yaml of any kind, no TAGS
-#  (3) has yaml, no TAGS: line
-#  (4) has yaml, has TAGS:  but no acutal tags (blank)
-   #
+#'  @title create_fake_yaml_object
+#'  @description   GOAL:   create 4 use cases to test TAGS: ....
+#'	  (1) all correct
+#'	  (2) no yaml of any kind, no TAGS
+#'	  (3) has yaml, no TAGS: line
+#'	  (4) has yaml, has TAGS:  but no acutal tags (blank)
 ## TODO:   this creates yml OBJECT; not a header, but can be used to create
 ### header.
-create_fake_yaml_object  <- function(the_tags_line = NULL) {
+#'  @examples
+#'	    \dontrun{
+#'	    h  <- create_fake_yml_object(the_tags_line = "tag1,tag2, tag3")
+#'	    class(h)
+#'	    str(h)
+#'	    ls.str(h)
+#'	    }
+create_fake_yml_object  <- function(the_tags_line = NULL) {
      .yml  <- yml() %>% 
          yml_output(pdf_document(toc =  TRUE, toc_depth=4)) %>%
          yml_latex_opts(
@@ -25,7 +27,8 @@ create_fake_yaml_object  <- function(the_tags_line = NULL) {
      
     return(.yml)
 }
-}
+
+
 
 #### 2 create_fake_file(), using fake yml_object
 {
@@ -43,10 +46,10 @@ create_fake_yaml_object  <- function(the_tags_line = NULL) {
 
 
 
-#### 3 create_fake_rmd_custom (w/o ymlthis::)
+#### 3 create_fake_file_custom (w/o ymlthis::)
 {
-create_fake_rmd_custom  <- function(text=NULL, the_file = NULL) {
-  writeLines(text = text, paste0(the_dir, the_file ) )
+create_fake_file_custom  <- function(text=NULL, the_dir = NULL, the_file = NULL) {
+  writeLines(text = text, paste0(the_dir, "/", the_file ) )
 }
 }
 

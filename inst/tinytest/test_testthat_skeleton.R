@@ -1,10 +1,13 @@
 library(testthat)
 
-
-## SKELTON for testing.
+# ------------------------
+##  TESTTHAT::
+##
+##  PURPOSE:  SKELETON for testthat:: testing.
+##  (note:   now using tinytest::    Nov 2021)
+# ------------------------
 ##
 ##
-# =======================
 if (F) {
 testthat::test_path(here("tests","testthat", "test_test01.R"))
 testthat::test_file(here("tests","testthat", "test_test01.R"))
