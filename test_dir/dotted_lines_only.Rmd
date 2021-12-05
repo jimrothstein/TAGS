@@ -1,5 +1,3 @@
 ---
-
-           ---
-
-           Only dotted lines here
+---
+Only dotted lines here

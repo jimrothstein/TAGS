@@ -17,15 +17,17 @@
 #'	    }
 create_fake_yml_object  <- function(the_tags_line = NULL) {
      .yml  <- yml() %>% 
-         yml_output(pdf_document(toc =  TRUE, toc_depth=4)) %>%
-         yml_latex_opts(
-                    fontfamily = "Fira Sans Thin",
+         yml_output(pdf_document(toc =  TRUE, toc_depth=4)) %>% yml_latex_opts( fontfamily = "Fira Sans Thin",
                     fontsize = "11pt",
-                    links_as_notes = TRUE) %>% 
-         yml_toplevel(as_yml(paste0("TAGS:  ",  the_tags_line, "\n")
-                                    ))
-     
-    return(.yml)
+                    links_as_notes = TRUE)
+
+         if (length(the_tags_line) == 0) return(.yml)
+         if (the_tags_line == "TAGS:") 
+             return(.yml %>% yml_toplevel(as_yml("TAGS: \\s")))
+#             return(.yml %>% yml_toplevel(as_yml("TAGS: how to put in blank characer? ")))
+                                    
+         .yml %>% 
+             yml_toplevel(as_yml(paste0("TAGS:  ",  the_tags_line, "\n")))
 }
 
 
@@ -52,7 +54,7 @@ create_fake_file_custom  <- function(text=NULL, the_dir = NULL, the_file = NULL)
   writeLines(text = text, paste0(the_dir, "/", the_file ) )
 }
 }
-
+create_fake_file_custom(c("line1", "line2"),the_dir="test_dir", the_file="fake1")
 ####  4 Remove all fake files and fake directory.
 {
     clean_up  <- function(the_dir = NULL){

@@ -34,7 +34,8 @@ load_all()
 
 
 ##  tinytest:   create_fake_yml_object()
-{
+
+
 
 ## full yml header
 tinytest::expect_true(is_yml(create_fake_yml_object("Tag1")))
@@ -43,76 +44,48 @@ tinytest::expect_true(is_yml(create_fake_yml_object("Tag1")))
 ## full yml header, but tagsline:   TAGS: null 
 
 ## default, basic yml, but no TAGS: line
-{
-x  <- ymlthis::yml()
+    {
+    x  <- ymlthis::yml()
 
-tinytest::expect_true(is_yml(x))
-}
+    tinytest::expect_true(is_yml(x))
+    }
 
 ## works
 create_fake_yml_object(the_tags_line = "tag1,tag2, tag3")
 
-{  ## all create `null`
-create_fake_yml_object(the_tags_line = "")
-create_fake_yml_object(the_tags_line = " ")
-create_fake_yml_object(the_tags_line = NULL)
-create_fake_yml_object()
-}
+    {  ## all create `null`
+    create_fake_yml_object(the_tags_line = "")
+    create_fake_yml_object(the_tags_line = " ")
+    create_fake_yml_object(the_tags_line = NULL)
+        create_fake_yml_object()
+        }
 ## create fake files
 ##  yml:  dot lines only
 {
 
 the_file  <- "dotted_lines_only.Rmd"
 the_path  <- paste0(the_dir, "/", the_file) 
-writeLines("---
-
-           ---
-
-           Only dotted lines here",
-       con=the_path)
+the_path
+the_text= c("---", "---", "Only dotted lines here")
        
-the_text  <- "---\n\n---\n\n only dotted lines here"
-the_text  <- "---
-
----
-
-Only dotted lines here.
-"
-the_text
-print(the_text)
-
 create_fake_file_custom(text=the_text, the_dir = the_dir, the_file= the_file)
-readLines(paste0(the_dir, "/", the_file))
+
 
 }
 { ## no yml, no yml header at all
-the_file  <- "testing.md"
+the_file  <- "no_yml_file.Rmd"
 the_path  <- paste0(the_dir, "/", the_file) 
 
 create_fake_file_custom(text="fake_file", the_dir = the_dir, the_file= the_file)
 
 list.files(the_dir)
 
-readLines(paste0(the_dir, "/", the_file))
 }
 
 
 
 
-## ALSO works
-.yml = yml(as_yml(c("---\nTAGS:  fakeTag, fakeTag2\n---\n")))
-.yml
 
-## But none of this
-# C-stack error
-    if (F){
-    .yml = yml(as_yml(c("---\n---\n")))
-
-    .yml
-    .yml = yml(as_yml("---"))
-    }
-
-}
 
 
 #### fake files:   Create & Study
@@ -132,19 +105,7 @@ the_dir
     readLines(path)
 }
 
-{
-#### custom fake files:  Create & Study
-create_fake_rmd_custom(text =  
-   c("---","TAGS:  fakeTag, fakeTag2","---"),
-   the_file = "third.Rmd")
 
-create_fake_rmd_custom(text=c("---", "---", "main body"), 
-                       the_file = "two_lines_only")
-
-create_fake_rmd_custom(text=c("", "", "main body"), 
-                       the_file = "NO_yml")
-the_dir
-}
 
 {
   ## NOTES:  work
